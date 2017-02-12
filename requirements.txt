@@ -1,0 +1,7 @@
+scipy
+scikit-learn
+pandas
+numpy
+marshmallow
+Flask
+Flask-RESTful
