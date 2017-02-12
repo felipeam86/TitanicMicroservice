@@ -16,14 +16,14 @@ from predictor import serialized_prediction
 __author__ = "Felipe Aguirre Martinez"
 __email__ = "felipeam86@gmail.com"
 
-offer_schema = PassengerSchema(many=True, strict=True)
+passenger_schema = PassengerSchema(many=True, strict=True)
 
 
 @api.route('/prediction')
 class Prediction(Resource):
     def post(self):
         json_data = request.get_json()
-        result = offer_schema.load(json_data)
+        result = passenger_schema.load(json_data)
         df = pd.concat(result.data)
         return serialized_prediction(df)
 
