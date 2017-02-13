@@ -8,7 +8,7 @@ on finding the best solution to the Kaggle competition.
 
 - Clone and cd to the repository directory:
 ```bash
-git clone git@github.com:felipeam86/TitanicMicroservice.git
+git clone https://github.com/felipeam86/TitanicMicroservice.git
 cd TitanicMicroservice
 ```
 - Build an run the docker container:
