@@ -29,4 +29,4 @@ class Prediction(Resource):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', processes=4)
+    app.run(debug=True, host='0.0.0.0', processes=4, port=5000)
