@@ -4,6 +4,8 @@
 REST API serving a simple Titanic survival predictor
 """
 
+import argparse
+
 import pandas as pd
 
 from flask import request
@@ -15,6 +17,9 @@ from predictor import serialized_prediction
 
 __author__ = "Felipe Aguirre Martinez"
 __email__ = "felipeam86@gmail.com"
+
+DEFAULT_HOST= "0.0.0.0"
+DEFAULT_PORT= "5000"
 
 passenger_schema = PassengerSchema(many=True, strict=True)
 
@@ -29,4 +34,33 @@ class Prediction(Resource):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', processes=4, port=5000)
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-H", "--host", default=DEFAULT_HOST,
+                      help="Hostname for the REST API [default {}]".format(DEFAULT_HOST))
+
+    parser.add_argument("-P", "--port", default=DEFAULT_PORT,
+                      help="Port for the REST API [default {}]".format(DEFAULT_PORT))
+
+    parser.add_argument("-n", "--cpus", type=int, default=4)
+
+    parser.add_argument("-d", "--debug", action="store_true", dest="debug")
+
+    parser.add_argument("-p", "--profile", action="store_true", dest="profile")
+
+    args = parser.parse_args()
+
+    if args.profile:
+        from werkzeug.contrib.profiler import ProfilerMiddleware
+
+        app.config['PROFILE'] = True
+        app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
+        args.debug = True
+
+    app.run(
+        debug=args.debug,
+        host=args.host,
+        port=int(args.port),
+        processes=int(args.cpus)
+    )
