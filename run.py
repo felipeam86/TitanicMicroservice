@@ -18,8 +18,8 @@ from predictor import serialized_prediction
 __author__ = "Felipe Aguirre Martinez"
 __email__ = "felipeam86@gmail.com"
 
-DEFAULT_HOST= "0.0.0.0"
-DEFAULT_PORT= "5000"
+DEFAULT_HOST = "0.0.0.0"
+DEFAULT_PORT = "5000"
 
 passenger_schema = PassengerSchema(many=True, strict=True)
 
@@ -38,10 +38,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-H", "--host", default=DEFAULT_HOST,
-                      help="Hostname for the REST API [default {}]".format(DEFAULT_HOST))
+                        help="Hostname for the REST API [default {}]".format(DEFAULT_HOST))
 
     parser.add_argument("-P", "--port", default=DEFAULT_PORT,
-                      help="Port for the REST API [default {}]".format(DEFAULT_PORT))
+                        help="Port for the REST API [default {}]".format(DEFAULT_PORT))
 
     parser.add_argument("-n", "--cpus", type=int, default=4)
 

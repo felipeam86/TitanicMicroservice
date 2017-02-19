@@ -9,29 +9,30 @@ class ColumnLabelEncoder:
     """
     http://stackoverflow.com/questions/24458645/label-encoding-across-multiple-columns-in-scikit-learn
     """
-    def __init__(self,columns = None):
-        self.columns = columns # array of column names to encode
+    def __init__(self, columns=None):
+        # array of column names to encode
+        self.columns = columns
 
-    def fit(self,X,y=None):
-        return self # not relevant here
+    def fit(self, X, y=None):
+        return self
 
-    def transform(self,X):
-        '''
+    def transform(self, X):
+        """
         Transforms columns of X specified in self.columns using
         LabelEncoder(). If no columns specified, transforms all
         columns in X.
-        '''
+        """
         output = X.copy()
         if self.columns is not None:
             for col in self.columns:
                 output[col] = LabelEncoder().fit_transform(output[col])
         else:
-            for colname,col in output.iteritems():
+            for colname, col in output.iteritems():
                 output[colname] = LabelEncoder().fit_transform(col)
         return output
 
-    def fit_transform(self,X,y=None):
-        return self.fit(X,y).transform(X)
+    def fit_transform(self, X, y=None):
+        return self.fit(X, y).transform(X)
 
 
 class FeatureExtractor(TransformerMixin, BaseEstimator):

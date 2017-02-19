@@ -25,14 +25,14 @@ class PassengerSchema(Schema):
 
 if __name__ == '__main__':
     passenger_schema = PassengerSchema(many=True, strict=True)
-    passenger_data = [{'passengerid' : "001",
-                       'pclass' : "2",
-                       'sex' : "male",
-                       'age' : "34.0",
-                       'sibsp' : "0",
-                       'parch' : "0",
-                       'fare' : "13.0000"},
-                      {'passengerid' : "002",
+    passenger_data = [{'passengerid': "001",
+                       'pclass': "2",
+                       'sex': "male",
+                       'age': "34.0",
+                       'sibsp': "0",
+                       'parch': "0",
+                       'fare': "13.0000"},
+                      {'passengerid': "002",
                        'pclass': "3",
                        'sex': "female",
                        'age': "20.0",
