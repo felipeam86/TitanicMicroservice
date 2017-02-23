@@ -15,6 +15,7 @@ from flask_restful import Resource
 from app import app, api
 from model import PassengerSchema
 from predictor import predictor
+from explainer import construct_predictor_explainer
 
 __author__ = "Felipe Aguirre Martinez"
 __email__ = "felipeam86@gmail.com"
@@ -23,6 +24,7 @@ DEFAULT_HOST = "0.0.0.0"
 DEFAULT_PORT = "5000"
 
 passenger_schema = PassengerSchema(many=True, strict=True)
+predictor_explainer = construct_predictor_explainer(show_notebook=False)
 
 
 def serialized_prediction(df):
@@ -35,6 +37,14 @@ def serialized_prediction(df):
     return response.to_json(orient='index')
 
 
+def explain_prediction(df):
+    df = df.convert_objects(convert_numeric=True)
+    exp = predictor_explainer.transform(df)
+    response = pd.DataFrame(dict(exp.as_list()),
+                            index=df['passengerid'])
+    return response.to_json(orient="index")
+
+
 @api.route('/prediction')
 class Prediction(Resource):
     def post(self):
@@ -42,6 +52,15 @@ class Prediction(Resource):
         result = passenger_schema.load(json_data)
         df = pd.concat(result.data)
         return serialized_prediction(df)
+
+
+@api.route('/explain')
+class Explain(Resource):
+    def post(self):
+        json_data = request.get_json()
+        result = passenger_schema.load(json_data)
+        df = pd.concat(result.data)
+        return explain_prediction(df)
 
 
 if __name__ == '__main__':
