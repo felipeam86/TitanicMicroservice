@@ -45,6 +45,12 @@ def explain_prediction(df):
     return response.to_json(orient="index")
 
 
+def explain_prediction_html(df):
+    df = df.convert_objects(convert_numeric=True)
+    exp = predictor_explainer.transform(df)
+    return exp.as_html()
+
+
 @api.route('/prediction')
 class Prediction(Resource):
     def post(self):
@@ -61,6 +67,14 @@ class Explain(Resource):
         result = passenger_schema.load(json_data)
         df = pd.concat(result.data)
         return explain_prediction(df)
+
+
+@app.route('/explainhtml', methods=['POST'])
+def explain_html():
+    json_data = request.get_json()
+    result = passenger_schema.load(json_data)
+    df = pd.concat(result.data)
+    return explain_prediction_html(df)
 
 
 if __name__ == '__main__':
