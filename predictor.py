@@ -13,7 +13,7 @@ test = pd.read_csv('data/cleandata.test.csv')
 
 
 predictor = make_pipeline(
-    PassengerTransformer,
+    PassengerTransformer(),
     RandomForestClassifier(random_state=123)
 )
 predictor.fit(train, train.survived)

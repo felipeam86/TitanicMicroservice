@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import pandas as pd
+
 from sklearn.pipeline import TransformerMixin, BaseEstimator, make_pipeline, FeatureUnion
 from sklearn.preprocessing import LabelEncoder, Imputer
 
@@ -51,10 +53,26 @@ class FeatureExtractor(TransformerMixin, BaseEstimator):
         return self
 
 
-PassengerTransformer = FeatureUnion(
-    transformer_list=[
-        ('age', make_pipeline(FeatureExtractor(['age']), Imputer())),
-        ('sex', make_pipeline(FeatureExtractor(['sex']), ColumnLabelEncoder(['sex']))),
-        ('numerical', FeatureExtractor(['pclass', 'sibsp', 'parch', 'fare'])),
-    ]
-)
+class PassengerTransformer(TransformerMixin, BaseEstimator):
+    """
+    Pandas friendly FeatureUnion
+    """
+    def __init__(self):
+        self.transformer = FeatureUnion(
+            transformer_list=[
+                ('age', make_pipeline(FeatureExtractor(['age']), Imputer())),
+                ('sex', make_pipeline(FeatureExtractor(['sex']), ColumnLabelEncoder(['sex']))),
+                ('numerical', FeatureExtractor(['pclass', 'sibsp', 'parch', 'fare'])),
+            ]
+        )
+        self.columns = ['age', 'sex', 'pclass', 'sibsp', 'parch', 'fare']
+
+    def transform(self, X):
+        df = pd.DataFrame(
+            data=self.transformer.transform(X),
+            columns=self.columns
+        )
+        return df
+
+    def fit(self, X, y=None):
+        return self.transformer.fit(X)

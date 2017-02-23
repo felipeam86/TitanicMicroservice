@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+import numpy as np
 from sklearn.pipeline import TransformerMixin, BaseEstimator, make_pipeline
 from sklearn.ensemble import RandomForestClassifier
 from lime.lime_tabular import LimeTabularExplainer
@@ -31,7 +32,7 @@ class Explainer(TransformerMixin, BaseEstimator):
 
     def transform(self, X):
         assert X.shape[0] == 1, "Can only explain one prediction at a time"
-        X = X.flatten()
+        X = np.array(X).flatten()
         exp = self.explainer_.explain_instance(X, self.predict_proba)
         if self.notebook:
             exp.show_in_notebook(show_table=True, show_all=False)
@@ -41,13 +42,15 @@ class Explainer(TransformerMixin, BaseEstimator):
 train = pd.read_csv('data/cleandata.train.csv')
 test = pd.read_csv('data/cleandata.test.csv')
 
+passenger_transformer = PassengerTransformer()
+
 rf = RandomForestClassifier(random_state=123)
-rf.fit(PassengerTransformer.fit_transform(train), train.survived)
+rf.fit(passenger_transformer.fit_transform(train), train.survived)
 
 
 def construct_predictor_explainer(show_notebook=False):
     predictor_explainer = make_pipeline(
-        PassengerTransformer,
+        PassengerTransformer(),
         Explainer(
             feature_names=['age', 'sex', 'pclass', 'sibsp', 'parch', 'fare'],
             class_names=list(train.survived.unique()),
