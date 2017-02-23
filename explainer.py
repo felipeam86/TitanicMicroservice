@@ -44,18 +44,21 @@ test = pd.read_csv('data/cleandata.test.csv')
 rf = RandomForestClassifier(random_state=123)
 rf.fit(PassengerTransformer.fit_transform(train), train.survived)
 
-predictor_explainer = make_pipeline(
-    PassengerTransformer,
-    Explainer(
-        feature_names=['age', 'sex', 'pclass', 'sibsp', 'parch', 'fare'],
-        class_names=list(train.survived.unique()),
-        predict_proba=rf.predict_proba,
-        notebook=True
-    )
-)
 
-predictor_explainer.fit(train)
+def construct_predictor_explainer(show_notebook=False):
+    predictor_explainer = make_pipeline(
+        PassengerTransformer,
+        Explainer(
+            feature_names=['age', 'sex', 'pclass', 'sibsp', 'parch', 'fare'],
+            class_names=list(train.survived.unique()),
+            predict_proba=rf.predict_proba,
+            notebook=show_notebook
+        )
+    )
+
+    return predictor_explainer.fit(train)
 
 
 if __name__ == "__main__":
+    predictor_explainer = construct_predictor_explainer(show_notebook=True)
     exp = predictor_explainer.transform(test.sample(1))
