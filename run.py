@@ -6,16 +6,13 @@ REST API serving a simple Titanic survival predictor
 
 import argparse
 
-import numpy as np
 import pandas as pd
-
 from flask import request
 from flask_restful import Resource
 
 from app import app, api
 from model import PassengerSchema
-from predictor import predictor
-from explainer import construct_predictor_explainer
+from utils import serialized_prediction, explain_prediction, explain_prediction_html
 
 __author__ = "Felipe Aguirre Martinez"
 __email__ = "felipeam86@gmail.com"
@@ -24,31 +21,6 @@ DEFAULT_HOST = "0.0.0.0"
 DEFAULT_PORT = "5000"
 
 passenger_schema = PassengerSchema(many=True, strict=True)
-predictor_explainer = construct_predictor_explainer(show_notebook=False)
-
-
-def serialized_prediction(df):
-
-    response = pd.DataFrame(np.vstack([predictor.predict(df),
-                                       predictor.predict_proba(df).max(axis=1)]).T,
-                            columns=["Survived", "Probability"],
-                            index=df['passengerid'])
-
-    return response.to_json(orient='index')
-
-
-def explain_prediction(df):
-    df = df.convert_objects(convert_numeric=True)
-    exp = predictor_explainer.transform(df)
-    response = pd.DataFrame(dict(exp.as_list()),
-                            index=df['passengerid'])
-    return response.to_json(orient="index")
-
-
-def explain_prediction_html(df):
-    df = df.convert_objects(convert_numeric=True)
-    exp = predictor_explainer.transform(df)
-    return exp.as_html()
 
 
 @api.route('/prediction')
