@@ -11,7 +11,7 @@ on finding the best solution to the Kaggle competition.
 git clone https://github.com/felipeam86/TitanicMicroservice.git
 cd TitanicMicroservice
 ```
-- Build an run the docker container:
+- Build and run the docker container:
 ```bash
 docker build -t titanic .
 docker run --name titanic_predictor -p 5000:5000 -t titanic
