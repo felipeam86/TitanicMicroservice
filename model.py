@@ -19,7 +19,7 @@ class PassengerSchema(Schema):
     fare = fields.Str(required=True)
 
     @post_load
-    def make_offer(self, data):
+    def make_passenger(self, data):
         return pd.DataFrame(data, index=[0])
 
 
