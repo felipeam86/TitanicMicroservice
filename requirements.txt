@@ -6,3 +6,4 @@ marshmallow
 Flask
 Flask-RESTful
 lime
+requests
